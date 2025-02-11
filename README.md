@@ -1,5 +1,7 @@
 # Troll1
-Paso a paso para vulnerar la máquina troll1
+
+![imagen](https://github.com/90l3m0np13/Troll1/blob/main/Portada_LoL.jpeg)
+#  Aprendiendo Pentesting: Resolución Práctica de la Máquina Troll
 
 Aquí tienes una versión mejorada y adaptada para GitHub del texto que proporcionaste. He estructurado el contenido en un formato más legible, utilizando Markdown para resaltar los comandos y los pasos clave. Además, he añadido secciones para mejorar la organización y facilitar la lectura.
 
@@ -61,6 +63,7 @@ get lol.pcap
 
 Accedemos a la ruta web asociada al usuario encontrado:
 
+  ![imagen](https://github.com/90l3m0np13/Troll1/blob/main/LoL.png) 
 ```
 http://<IP_de_la_máquina>/sup3rs3cr3tdirlol
 ```
@@ -151,10 +154,4 @@ cat /root/proof.txt
 - [Exploit Database](https://www.exploit-db.com)
 ```
 
-### Mejoras realizadas:
-1. **Estructura clara**: Se han utilizado encabezados (`#`, `##`, `###`) para organizar el contenido.
-2. **Resaltado de comandos**: Los comandos se han formateado como bloques de código para facilitar su identificación.
-3. **Enlaces útiles**: Se han añadido enlaces a recursos externos para ampliar la información.
-4. **Lenguaje conciso**: Se ha simplificado el texto para que sea más directo y fácil de seguir.
 
-Este formato es ideal para compartir en GitHub, ya que es legible tanto en la plataforma como en editores de texto que soporten Markdown.

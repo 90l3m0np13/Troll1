@@ -76,7 +76,7 @@ http://<IP_de_la_máquina>/sup3rs3cr3tdirlol
 En la misma ruta web, encontramos dos carpetas:
 
 1. **good_luck**: Contiene un listado de usuarios registrados en la máquina.
-2. **this_folder_contains_the_password**: Contiene un archivo `Pass.txt` con una posible contraseña.
+2. **this_folder_contains_the_password**: Contiene un archivo con una posible contraseña.
 
 ### Uso de Hydra:
 Utilizamos Hydra para probar la contraseña encontrada con los usuarios listados.
@@ -150,6 +150,6 @@ cat /root/proof.txt
 
 - [Reverse Shell Cheatsheet](https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#python)
 - [Exploit Database](https://www.exploit-db.com)
-```
+
 
 

@@ -3,8 +3,6 @@
 ![imagen](https://github.com/90l3m0np13/Troll1/blob/main/Portada_LoL.jpeg)
 #  Aprendiendo Pentesting: Resolución Práctica de la Máquina Troll
 
-Aquí tienes una versión mejorada y adaptada para GitHub del texto que proporcionaste. He estructurado el contenido en un formato más legible, utilizando Markdown para resaltar los comandos y los pasos clave. Además, he añadido secciones para mejorar la organización y facilitar la lectura.
-
 ```markdown
 # Resolución de la Máquina Troll
 

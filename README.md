@@ -3,7 +3,7 @@
 ![imagen](https://github.com/90l3m0np13/Troll1/blob/main/Portada_LoL.jpeg)
 #  Aprendiendo Pentesting: Resolución Práctica de la Máquina Troll
 
-```markdown
+
 # Resolución de la Máquina Troll
 
 Este documento describe el proceso paso a paso para resolver la máquina virtual "Troll". A continuación, se detallan las acciones realizadas para identificar vulnerabilidades, explotarlas y obtener acceso como usuario root.
@@ -67,7 +67,7 @@ http://<IP_de_la_máquina>/sup3rs3cr3tdirlol
 ```
 
 ### Archivo Descubierto:
-- **roflmao**: Un archivo oculto que contiene la pista `Find address 0x0856BF`.
+- **roflmao**: Un archivo oculto que contiene la pista `Find address <Pista>`.
 
 ---
 

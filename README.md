@@ -1,7 +1,7 @@
 # Troll1
 
 ![imagen](https://github.com/90l3m0np13/Troll1/blob/main/Portada_LoL.jpeg)
-#  Aprendiendo Pentesting: Resolución Práctica de la Máquina Troll
+
 
 
 # Resolución de la Máquina Troll

